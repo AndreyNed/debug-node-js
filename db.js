@@ -8,6 +8,8 @@ const {
   DB_PORT,
 } = process.env;
 
+debugger;
+
 const sequelize = new Sequelize(DB, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
     port: Number(DB_PORT),

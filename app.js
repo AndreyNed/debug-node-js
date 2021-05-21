@@ -1,15 +1,17 @@
-var express = require('express');
+const express = require('express');
 const bodyParser = require('body-parser');
 
-var db = require('./db');
-var user = require('./controllers/usercontroller');
+const db = require('./db');
+const user = require('./controllers/usercontroller');
 const validateSession = require('./middleware/validate-session');
-var game = require('./controllers/gamecontroller')
+const game = require('./controllers/gamecontroller')
 
 const PORT = Number(process.env.PORT);
-var app = express();
+const app = express();
 
-db.sync();
+db.sync()
+  .then(result => { console.log(result); })
+  .catch(e => { console.error(e) });
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/api/auth', user);
