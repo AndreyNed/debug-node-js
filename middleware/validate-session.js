@@ -12,7 +12,7 @@ const validateSession = async (req, res, next) => {
       return res.status(403).send({ auth: false, message: "No token provided." });
     } else {
       try {
-        const decoded = jwt.verify(sessionToken, 'lets_play_sum_games_man');
+        const decoded = jwt.verify(sessionToken, 'lets_play_sum_games_man') || {};
         const user = await User.findOne({ where: { id: decoded.id } });
         req.user = user;
         console.log(`user: ${user}`)
