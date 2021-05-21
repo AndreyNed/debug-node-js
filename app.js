@@ -18,8 +18,6 @@ app.use('/api/auth', user);
 app.use(validateSession);
 app.use('/api/game', game);
 
-app.all('/', (req, res) => { res.send('Hello!'); });
-
 app.listen(PORT,function() {
     console.log("App is listening on 4000");
 });
