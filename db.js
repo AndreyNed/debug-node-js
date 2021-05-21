@@ -8,22 +8,21 @@ const {
   DB_PORT,
 } = process.env;
 
-debugger;
-
 const sequelize = new Sequelize(DB, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
     port: Number(DB_PORT),
     dialect: 'postgres'
 })
 
-sequelize.authenticate().then(
-    function success() {
+sequelize.authenticate()
+  .then(
+    () => {
         console.log("Connected to DB");
     },
 
-    function fail(err) {
+    err => {
         console.log(`Error: ${err}`);
-    }
+    },
 );
 
 module.exports = sequelize;
