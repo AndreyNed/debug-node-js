@@ -1,34 +1,40 @@
-const sequelize = require('sequelize');
+const {
+  Model,
+  DataTypes: {
+    BOOLEAN,
+    CHAR,
+    INTEGER,
+    STRING,
+  },
+} = require('sequelize');
 
 const db = require('../db');
 
-const { DataTypes } = sequelize;
-
-class Game extends db.Model {}
+class Game extends Model {}
 
 Game.init({
   title: {
-    type: DataTypes.STRING(25),
+    type: STRING(25),
     allowNull: false,
   },
 
   owner_id: {
-    type: DataTypes.INTEGER,
+    type: INTEGER,
     allowNull: false
   },
 
   studio: {
-    type: DataTypes.STRING,
+    type: STRING,
     allowNull: false,
   },
 
   esrb_rating: {
-    type: DataTypes.CHAR(5),
+    type: CHAR(5),
     allowNull: false,
   },
 
   user_rating: {
-    type: DataTypes.INTEGER,
+    type: INTEGER,
     allowNull: false,
     validate: {
       min: 1,
@@ -37,7 +43,7 @@ Game.init({
   },
 
   have_played : {
-    type: DataTypes.BOOLEAN,
+    type: BOOLEAN,
     defaultValue: false,
     allowNull: false
   }

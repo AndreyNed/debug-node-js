@@ -10,7 +10,7 @@ router.post('/signup', async (req, res) => {
     const user = await User.create({
       full_name,
       username,
-      passwordhash: bcrypt.hashSync(password, 10),
+      passwordHash: bcrypt.hashSync(password, 10),
       email,
     });
     let token = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', { expiresIn: 60 * 60 * 24 });
