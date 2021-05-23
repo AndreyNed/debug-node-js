@@ -15,7 +15,7 @@ const validateSession = async (req, res, next) => {
     const decoded = jwt.verify(sessionToken, 'lets_play_sum_games_man') || {};
     const user = await User.findOne({ where: { id: decoded.id } });
     req.user = user;
-    console.log(`user: ${user}`)
+    log.info(`user: ${user.username}`);
     next();
   } catch (e) {
     log.error(e);
