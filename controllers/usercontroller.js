@@ -26,11 +26,11 @@ router.post('/signin', async (req, res) => {
     const { username, password } = req.body.user;
     const user = await User.findOne({ where: { username } });
     if (!user) {
-      throw Object.create({ status: 404, message: 'User not found' });
+      throw Object.create({ status: 404, error: 'User not found' });
     }
     const matches = bcrypt.compare(password, user.passwordHash);
     if (!matches) {
-      throw Object.create({ status: 502, message: 'Password do not match' });
+      throw Object.create({ status: 502, error: 'Password do not match' });
     }
     const sessionToken = jwt.sign({ id: user.id }, 'lets_play_sum_games_man', { expiresIn: 60 * 60 * 24 });
     res.status(200).json({
@@ -42,9 +42,10 @@ router.post('/signin', async (req, res) => {
     console.error(e);
     const {
       status = 500,
-      message = 'Server error'
+      error,
+      message = 'Server error',
     } = e || {};
-    res.status(status).json({ message });
+    res.status(status).json({ error: error || message });
   }
 })
 

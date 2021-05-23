@@ -39,7 +39,7 @@ router.post('/create', async (req, res) => {
       user_rating,
       have_played,
     });
-    res.status(200).json({ game, message: 'Game created.' });
+    res.status(201).json({ game, message: 'Game created.' });
   } catch (e) {
     log.error(e);
     res.status(500).send(e.message);
