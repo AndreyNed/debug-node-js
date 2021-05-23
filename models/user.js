@@ -1,26 +1,38 @@
-module.exports = function(sequelize, DataTypes) {
-    return sequelize.define('user', {
-        full_name: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
+const {
+  DataTypes: { STRING },
+  Model,
+} = require('sequelize');
 
-        username: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
+const db = require('../db');
 
-        passwordHash: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
+class User extends Model {}
 
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                isEmail: true
-            }
-        }
-    })
-}
+User.init({
+  full_name: {
+    type: STRING,
+    allowNull: false
+  },
+
+  username: {
+    type: STRING,
+    allowNull: false
+  },
+
+  passwordHash: {
+    type: STRING,
+    allowNull: false
+  },
+
+  email: {
+    type: STRING,
+    allowNull: false,
+    validate: {
+      isEmail: true
+    }
+  }
+}, {
+  sequelize: db,
+  modelName: 'user',
+});
+
+module.exports = User;

@@ -1,116 +1,79 @@
-var router = require('express').Router();
-var Game = require('../db').import('../models/game');
+const router = require('express').Router();
 
-router.get('/all', (req, res) => {
-    Game.findAll({ where: { owner_id: req.user.id } })
-        .then(
-            function findSuccess(data) {
-                res.status(200).json({
-                    games: games,
-                    message: "Data fetched."
-                })
-            },
+const Game = require('../models/game');
+const log = require('../utils/log');
 
-            function findFail() {
-                res.status(500).json({
-                    message: "Data not found"
-                })
-            }
-        )
+router.get('/all', async (req, res) => {
+  try {
+    const games = await Game.findAll({ where: { owner_id: req.user.id } });
+    res.status(200).json({ games, message: 'Data fetched.' });
+  } catch (e) {
+    log.error(e);
+    res.status(500).json({ message: 'Data not found' });
+  }
 })
 
-router.get('/:id', (req, res) => {
-    Game.findOne({ where: { id: req.params.id, owner_id: req.user.id } })
-        .then(
-            function findSuccess(game) {
-                res.status(200).json({
-                    game: game
-                })
-            },
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { id: owner_id } = req.user;
 
-            function findFail(err) {
-                res.status(500).json({
-                    message: "Data not found."
-                })
-            }
-        )
+  try {
+    const game = await Game.findOne({ where: { id, owner_id } });
+    res.status(200).json({ game });
+  } catch (e) {
+    log.error(e);
+    res.status(500).json({ message: "Data not found." });
+  }
 })
 
-router.post('/create', (req, res) => {
-    Game.create({
-        title: req.body.game.title,
-        owner_id: req.body.user.id,
-        studio: req.body.game.studio,
-        esrb_rating: req.body.game.esrb_rating,
-        user_rating: req.body.game.user_rating,
-        have_played: req.body.game.have_played
-    })
-        .then(
-            function createSuccess(game) {
-                res.status(200).json({
-                    game: game,
-                    message: "Game created."
-                })
-            },
+router.post('/create', async (req, res) => {
+  const { title, studio, esrb_rating, user_rating, have_played } = req.body.game;
+  const { id: owner_id } = req.user;
 
-            function createFail(err) {
-                res.status(500).send(err.message)
-            }
-        )
-})
+  try {
+    const game = await Game.create({
+      title,
+      owner_id,
+      studio,
+      esrb_rating,
+      user_rating,
+      have_played,
+    });
+    res.status(201).json({ game, message: 'Game created.' });
+  } catch (e) {
+    log.error(e);
+    res.status(500).send(e.message);
+  }
+});
 
-router.put('/update/:id', (req, res) => {
-    Game.update({
-        title: req.body.game.title,
-        studio: req.body.game.studio,
-        esrb_rating: req.body.game.esrb_rating,
-        user_rating: req.body.game.user_rating,
-        have_played: req.body.game.have_played
-    },
-        {
-            where: {
-                id: req.params.id,
-                owner_id: req.user
-            }
-        })
-        .then(
-            function updateSuccess(game) {
-                res.status(200).json({
-                    game: game,
-                    message: "Successfully updated."
-                })
-            },
+router.put('/update/:id', async (req, res) => {
+  const { title, studio, esrb_rating, user_rating, have_played } = req.body.game;
+  const { id: owner_id } = req.user;
+  const { id } = req.params;
 
-            function updateFail(err) {
-                res.status(500).json({
-                    message: err.message
-                })
-            }
+  try {
+    const game = await Game.update(
+     { title, studio, esrb_rating, user_rating, have_played },
+    { where: { id, owner_id } },
+    );
+    res.status(200).json({ game, message: 'Successfully updated.' });
+  } catch (e) {
+    log.error(e);
+    res.status(500).json({ message: e.message });
+  }
+});
 
-        )
-})
+router.delete('/remove/:id', async (req, res) => {
+  const { id } = req.params;
+  const { id: owner_id } = req.user;
 
-router.delete('/remove/:id', (req, res) => {
-    Game.destroy({
-        where: {
-            id: req.params.id,
-            owner_id: req.user.id
-        }
-    })
-    .then(
-        function deleteSuccess(game) {
-            res.status(200).json({
-                game: game,
-                message: "Successfully deleted"
-            })
-        },
+  try {
+    const game = await Game.destroy({ where: { id, owner_id } });
+    res.status(200).json({ game, message: 'Successfully deleted' });
+  } catch (e) {
+    log.error(e);
+    res.status(500).json({ error: e.message });
+  }
+});
 
-        function deleteFail(err) {
-            res.status(500).json({
-                error: err.message
-            })
-        }
-    )
-})
-
-module.exports = routers;
+module.exports = router;
